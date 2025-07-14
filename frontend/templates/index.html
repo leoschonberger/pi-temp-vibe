@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+			<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+		<title>Temperature Monitor Dashboard</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/style.css') }}"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>🌡️ Temperature Monitor Dashboard</h1>
+				<div class="controls">
+					<select id="timeFilter" class="time-filter">
+						<option value="6">Last 6 Hours</option>
+						<option value="24" selected>Last 24 Hours</option>
+						<option value="168">Last Week</option>
+						<option value="720">Last Month</option>
+						<option value="2160">Last 3 Months</option>
+						<option value="4320">Last 6 Months</option>
+						<option value="8760">Last Year</option>
+					</select>
+					<button id="refreshBtn" class="refresh-btn">🔄 Refresh</button>
+				</div>
+			</header>
+
+			<div class="status-bar">
+				<div id="connectionStatus" class="status-indicator">
+					<span class="status-dot"></span>
+					<span class="status-text">Connecting...</span>
+				</div>
+				<div id="lastUpdate" class="last-update">Last update: Never</div>
+			</div>
+
+			<div id="sensorGrid" class="sensor-grid">
+				<!-- Sensor charts will be dynamically added here -->
+			</div>
+
+			<div id="noDataMessage" class="no-data-message" style="display: none">
+				<h2>No sensors found</h2>
+				<p>
+					No temperature sensors are currently sending data. Make sure your
+					Raspberry Pi Pico devices are connected and sending data to the API.
+				</p>
+			</div>
+		</div>
+
+		<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+	</body>
+</html>

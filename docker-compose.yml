@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: temp_monitor_mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: tempmonitor123
+      MONGO_INITDB_DATABASE: temperature_db
+    volumes:
+      - mongodb_data:/data/db
+      - ./backend/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - "27017:27017"
+    networks:
+      - temp_monitor_network
+
+  backend:
+    build: ./backend
+    container_name: temp_monitor_backend
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://admin:tempmonitor123@mongodb:27017/temperature_db?authSource=admin
+      FLASK_ENV: production
+    ports:
+      - "5001:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - temp_monitor_network
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    container_name: temp_monitor_frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - backend
+    networks:
+      - temp_monitor_network
+    volumes:
+      - ./frontend:/app
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  temp_monitor_network:
+    driver: bridge 
